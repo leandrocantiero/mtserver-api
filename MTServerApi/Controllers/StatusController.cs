@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace mtvendors_api.Controllers
@@ -10,8 +11,7 @@ namespace mtvendors_api.Controllers
         [HttpGet("Get")]
         public ActionResult Get()
         {
-            var ApplicationUrl = AppSettings.GetValue("ApplicationUrl");
-            return Ok("MtServerApi online na url: " + ApplicationUrl);
+            return Ok("MtServerApi online");
         }
     }
 }

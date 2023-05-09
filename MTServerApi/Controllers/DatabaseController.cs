@@ -8,7 +8,6 @@ using System.Data;
 
 namespace mtvendors_api.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class DatabaseController : ControllerBase
@@ -20,6 +19,7 @@ namespace mtvendors_api.Controllers
             databaseRepository = new DatabaseRepository(context);
         }
 
+        [Authorize]
         [HttpPost("Set")]
         public ActionResult Set([Bind(include: "Host, User, Password, DatabaseName")] DatabaseConn conn)
         {
@@ -55,6 +55,7 @@ namespace mtvendors_api.Controllers
             return databaseRepository.Get();
         }
 
+        [Authorize]
         [HttpGet("GetDatabaseStructure")]
         public ActionResult<string> GetDatabaseStructure()
         {
