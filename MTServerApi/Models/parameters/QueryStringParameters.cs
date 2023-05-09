@@ -9,6 +9,5 @@
         public string OrderBy { get; set; } = "";
 
         public int PageSize { get; set; } = 100;
-
     }
 }

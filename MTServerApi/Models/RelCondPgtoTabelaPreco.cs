@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace mtvendors_api.Models
 {
@@ -6,12 +7,14 @@ namespace mtvendors_api.Models
     public class RelCondPgtoTabelaPreco
     {
         [Column("fk_cliente_cnpj")]
+        [MaxLength(14)]
         public string FkClienteCnpj { get; set; }
 
         [NotMapped]
         public string? Cliente { get; set; }
 
         [Column("fk_condicao_pgto")]
+        [MaxLength(10)]
         public string FkCondicaoPagamento { get; set; }
 
         [NotMapped]
@@ -30,12 +33,14 @@ namespace mtvendors_api.Models
         public string? Filial { get; set; }
 
         [Column("fk_tabela_preco")]
+        [MaxLength(10)]
         public string FkTabelaPreco { get; set; }
 
         [NotMapped]
         public string? TabelaPreco { get; set; }
 
         [Column("fk_vendedor")]
+        [MaxLength(7)]
         public string FkVendedor { get; set; }
 
         [NotMapped]

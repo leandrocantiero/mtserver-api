@@ -5,10 +5,26 @@ namespace mtvendors_api.Models
 {
     public class DataContext : DbContext
     {
+        public DataContext()
+        {
+        }
 
         public DataContext(DbContextOptions<DataContext> options)
         : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            if (!options.IsConfigured)
+            {
+                var connectionString = AppSettings.GetValue("ConnectionString");
+                if (!string.IsNullOrEmpty(connectionString))
+                {
+                    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                }
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

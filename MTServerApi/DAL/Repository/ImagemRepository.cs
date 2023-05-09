@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Cicada.EntityFrameworkCore.Extension;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using mtvendors_api.DAL.IRepository;
 using mtvendors_api.Models;
@@ -29,15 +30,15 @@ namespace mtvendors_api.DAL.Repository
         {
             foreach (var imagem in imagens)
             {
-                context.Imagens.Upsert(imagem)
-                    .On(v => new { v.Nome })
-                    .WhenMatched((old, @new) => new Imagem
-                    {
-                        Nome = old.Nome,
-                        Data = old.Data,
-                        Hora = old.Hora,
-                        Hash = old.Hash
-                    }).Run();
+                var imagemdb = GetByNome(imagem.Nome);
+
+                if (imagemdb == null)
+                {
+                    context.Imagens.Add(imagem);
+                } else
+                {
+                    context.Entry(imagem).State = EntityState.Modified;
+                }
             }
         }
 

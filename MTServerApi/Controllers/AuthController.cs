@@ -75,35 +75,29 @@ namespace mtvendors_api.Controllers
         }
 
         [HttpPost("SignUp")]
-        public ActionResult SignUp([Bind(include: "Nome, Email, Senha, Tipo")] Vendedor vendedor)
+        public ActionResult SignUp([Bind(include: "Nome, Email, Senha")] Vendedor vendedor)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var vendedordb = vendedorRepository.Get(new VendedorParameters
                 {
-                    var vendedordb = vendedorRepository.Get(new VendedorParameters
-                    {
-                        Nome = vendedor.Nome,
-                        Email = vendedor.Email
-                    });
-                    if (vendedordb.Data.Count() > 0)
-                    {
-                        return BadRequest("O recurso que você tentou adicionar já existe, tente usar outro nome");
-                    }
+                    Nome = vendedor.Nome,
+                    Email = vendedor.Email
+                });
+                if (vendedordb.Data.Count() > 0)
+                {
+                    return BadRequest("O recurso que você tentou adicionar já existe, tente usar outro nome");
+                }
 
-                    vendedorRepository.Insert(vendedor);
-                    vendedorRepository.Save();
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest(ModelState);
-                }
+                vendedorRepository.Insert(vendedor);
+                vendedorRepository.Save();
+                return Ok(vendedor);
+
+                //ModelState.AddModelError("Não foi possível concluir a operação, tente novamente mais tarde", e.Message);
             }
-            catch (DataException e)
+            else
             {
-                ModelState.AddModelError("Não foi possível concluir a operação, tente novamente mais tarde", e.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
+                return BadRequest(ModelState);
             }
         }
 

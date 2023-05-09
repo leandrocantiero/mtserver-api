@@ -7,8 +7,13 @@ using mtvendors_api.Models;
 using Serilog;
 using System.Text;
 
-var webApplicationOptions = new WebApplicationOptions() { ContentRootPath = AppContext.BaseDirectory, Args = args, ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName };
-var builder = WebApplication.CreateBuilder(webApplicationOptions);
+//var webApplicationOptions = new WebApplicationOptions()
+//{
+//    ContentRootPath = AppContext.BaseDirectory,
+//    Args = args,
+//    ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName
+//};
+var builder = WebApplication.CreateBuilder(args);
 
 if (!builder.Environment.IsDevelopment())
 {
@@ -23,11 +28,12 @@ builder.Services.AddDbContext<DataContext>(opt =>
     if (!string.IsNullOrEmpty(connectionString))
     {
         opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
 });
 builder.Services.AddSwaggerGen(o =>
 {
-    o.SwaggerDoc("v1", new OpenApiInfo { Title = "mtvendors-api", Version = "v1" });
+    o.SwaggerDoc("v1", new OpenApiInfo { Title = "MTServerApi", Version = "v1" });
 
     o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -72,20 +78,8 @@ builder.Logging.AddSerilog(new LoggerConfiguration()
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-else
-{
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "WMSWebApi");
-        c.RoutePrefix = string.Empty;
-    });
-
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseRouting();
 app.UseCors(x => x

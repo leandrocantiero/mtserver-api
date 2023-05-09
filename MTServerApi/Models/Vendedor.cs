@@ -7,10 +7,8 @@ namespace mtvendors_api.Models
     public class Vendedor
     {
         [Key]
-        
         [Column("codigo")]
-        [Required(ErrorMessage = "O campo Codigo é obrigatório")]
-        public string Codigo { get; set; }
+        public string? Codigo { get; set; }
 
         [Column("senha")]
         public string? Senha { get; set; }

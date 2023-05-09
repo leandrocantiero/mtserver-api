@@ -17,7 +17,47 @@ namespace mtvendors_api.DAL.Repository
 
         public void Insert(Vendedor vendedor)
         {
+            if (vendedor.Codigo == null || vendedor.Codigo.Equals(""))
+            {
+                vendedor.Codigo = GetNewCodigo();
+            }
+
+            if (context.Vendedores.Count() == 0)
+            {
+                vendedor.Tipo = "1";
+            }
+            else
+            {
+                vendedor.Tipo = "0";
+            }
+
             context.Vendedores.Add(vendedor);
+        }
+
+        private string GetNewCodigo()
+        {
+            int.TryParse(context.Vendedores.OrderBy(i => i.Codigo).LastOrDefault()?.Codigo, out var lastCodigo);
+
+            if (lastCodigo != 0 || context.Vendedores.Count() == 0)
+            {
+                lastCodigo += 1;
+                return lastCodigo.ToString();
+            } else
+            {
+                return AlfanumericoAleatorio(5);
+            }
+
+        }
+
+        private string AlfanumericoAleatorio(int tamanho)
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, tamanho)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+            return result;
         }
 
         public void Update(Vendedor vendedor)
@@ -90,7 +130,8 @@ namespace mtvendors_api.DAL.Repository
             if (supervisor == null)
             {
                 return "";
-            } else
+            }
+            else
             {
                 return supervisor.Nome;
             }

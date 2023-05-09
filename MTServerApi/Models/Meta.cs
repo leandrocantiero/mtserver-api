@@ -15,6 +15,7 @@ namespace mtvendors_api.Models
 
         [Required(ErrorMessage = "O campo FkVendedor é obrigatório")]
         [Column("fk_vendedor")]
+        [MaxLength(7)]
         public string FkVendedor { get; set; }
 
         [NotMapped]
@@ -22,6 +23,7 @@ namespace mtvendors_api.Models
 
         [Required(ErrorMessage = "O campo FkProduto é obrigatório")]
         [Column("fk_produto")]
+        [MaxLength(20)]
         public string FkProduto { get; set; }
 
         [NotMapped]
@@ -29,6 +31,7 @@ namespace mtvendors_api.Models
 
         [Required(ErrorMessage = "O campo FkFamilia é obrigatório")]
         [Column("fk_familia")]
+        [MaxLength(20)]
         public string FkFamilia { get; set; }
 
         [NotMapped]
@@ -36,6 +39,7 @@ namespace mtvendors_api.Models
 
         [Required(ErrorMessage = "O campo FkClienteCnpjCpf é obrigatório")]
         [Column("fk_cliente_cnpj_cpf")]
+        [MaxLength(14)]
         public string FkClienteCnpjCpf { get; set; }
 
         [NotMapped]

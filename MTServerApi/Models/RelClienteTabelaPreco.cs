@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace mtvendors_api.Models
 {
@@ -6,6 +7,7 @@ namespace mtvendors_api.Models
     public class RelClienteTabelaPreco
     {
         [Column("fk_cliente_cpf_cnpj")]
+        [MaxLength(14)]
         public string FkClienteCpfCnpj { get; set; }
 
         [NotMapped]
@@ -24,6 +26,7 @@ namespace mtvendors_api.Models
         public string? Filial { get; set; }
 
         [Column("fk_tabela_preco")]
+        [MaxLength(10)]
         public string FkTabelaPreco { get; set; }
 
         [NotMapped]

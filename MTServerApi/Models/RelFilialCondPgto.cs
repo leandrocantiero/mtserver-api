@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace mtvendors_api.Models
 {
@@ -18,6 +19,7 @@ namespace mtvendors_api.Models
         public string? Filial { get; set; }
 
         [Column("cod_condicao")]
+        [MaxLength(10)]
         public string FkCondicaoPagamento { get; set; }
 
         [NotMapped]
