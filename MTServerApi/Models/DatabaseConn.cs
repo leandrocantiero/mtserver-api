@@ -25,7 +25,6 @@ namespace mtvendors_api.Models
         [Required(ErrorMessage = "O campo User é obrigatório")]
         public string? User { get; set; }
 
-        [Required(ErrorMessage = "O campo Password é obrigatório")]
         public string? Password { get; set; }
 
         [Required(ErrorMessage = "O campo DatabaseName é obrigatório")]

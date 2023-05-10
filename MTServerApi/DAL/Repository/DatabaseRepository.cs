@@ -9,13 +9,6 @@ namespace mtvendors_api.DAL.Repository
 {
     public class DatabaseRepository : IDatabaseRepository
     {
-        private DataContext context;
-
-        public DatabaseRepository(DataContext context)
-        {
-            this.context = context;
-        }
-
         public DatabaseConn? Get()
         {
             var connectionString = AppSettings.GetValue("ConnectionString");
@@ -26,10 +19,23 @@ namespace mtvendors_api.DAL.Repository
             return new DatabaseConn(connectionString);
         }
 
-        public string GetDatabaseStructure()
+        public string GetDatabaseStructure(DatabaseConn databaseConn)
         {
-            var sql = context.Database.GenerateCreateScript();
-            return sql;
+            var connectionString = databaseConn.ConnectionString;
+            var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
+            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
+            using (DataContext dbContext = new DataContext(optionsBuilder.Options))
+            {
+                try
+                {
+                    return dbContext.Database.GenerateCreateScript();
+                }
+                catch (Exception ex)
+                {
+                    return "";
+                }
+            }
         }
 
         public void Set(DatabaseConn databaseConn)

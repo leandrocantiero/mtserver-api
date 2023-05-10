@@ -14,14 +14,13 @@ namespace mtvendors_api.Controllers
     {
         private IDatabaseRepository databaseRepository;
 
-        public DatabaseController(DataContext context)
+        public DatabaseController()
         {
-            databaseRepository = new DatabaseRepository(context);
+            databaseRepository = new DatabaseRepository();
         }
 
-        [Authorize]
         [HttpPost("Set")]
-        public ActionResult Set([Bind(include: "Host, User, Password, DatabaseName")] DatabaseConn conn)
+        public ActionResult Set([Bind(include: "Host, User, DatabaseName")] DatabaseConn conn)
         {
             try
             {
@@ -34,7 +33,7 @@ namespace mtvendors_api.Controllers
                     }
                     else
                     {
-                        return BadRequest("Não foi possível realizar a conexão!");
+                        return BadRequest("Não foi possível realizar a conexão com esta base de dados!");
                     }
                 }
                 else
@@ -57,13 +56,13 @@ namespace mtvendors_api.Controllers
 
         [Authorize]
         [HttpGet("GetDatabaseStructure")]
-        public ActionResult<string> GetDatabaseStructure()
+        public ActionResult<string> GetDatabaseStructure([Bind(include: "Host, User, DatabaseName")] DatabaseConn conn)
         {
-            return databaseRepository.GetDatabaseStructure();
+            return databaseRepository.GetDatabaseStructure(conn);
         }
 
         [HttpPost("Create")]
-        public ActionResult Create([Bind(include: "Host, User, Password, DatabaseName")] DatabaseConn conn)
+        public ActionResult Create([Bind(include: "Host, User, DatabaseName")] DatabaseConn conn)
         {
             if (ModelState.IsValid)
             {
@@ -93,11 +92,18 @@ namespace mtvendors_api.Controllers
         {
             var connectionString = conn.ConnectionString;
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 
-            using (DataContext dbContext = new DataContext(optionsBuilder.Options))
+            try
             {
-                return dbContext.Database.CanConnect();
+                optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                using (DataContext dbContext = new DataContext(optionsBuilder.Options))
+                {
+                    return dbContext.Database.CanConnect();
+                }
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

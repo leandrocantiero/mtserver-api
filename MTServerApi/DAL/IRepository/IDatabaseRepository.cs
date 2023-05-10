@@ -8,7 +8,7 @@ namespace mtvendors_api.DAL.IRepository
 
         DatabaseConn Get();
 
-        string GetDatabaseStructure();
+        string GetDatabaseStructure(DatabaseConn databaseConn);
 
         bool CreateDatabase(DatabaseConn databaseConn);
     }
