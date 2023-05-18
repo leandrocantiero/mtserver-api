@@ -1,49 +1,54 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 using mtvendors_api.DAL.IRepository;
-using mtvendors_api.Models;
+using mtvendors_api.Models.DTO;
+using mtvendors_api.Models.DAO;
 using Newtonsoft.Json;
+using mtvendors_api.Models.Helpers;
 
 namespace mtvendors_api.DAL.Repository
 {
     public class DatabaseRepository : IDatabaseRepository
     {
-        public DatabaseConn? Get()
+        public DatabaseConnDTO? Get()
         {
             var connectionString = AppSettings.GetValue("ConnectionString");
 
             if (string.IsNullOrEmpty(connectionString))
                 return null;
 
-            return new DatabaseConn(connectionString);
+            return new DatabaseConnDTO(connectionString);
         }
 
-        public string GetDatabaseStructure(DatabaseConn databaseConn)
+        public SincronizacaoDTO? GetDatabaseSchema(DatabaseConnDTO databaseConn)
         {
-            var connectionString = databaseConn.ConnectionString;
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            optionsBuilder.UseMySql(databaseConn.ConnectionString, ServerVersion.AutoDetect(databaseConn.ConnectionString));
 
             using (DataContext dbContext = new DataContext(optionsBuilder.Options))
             {
                 try
                 {
-                    return dbContext.Database.GenerateCreateScript();
+                    var schema = DBConverter.GetDatabaseSchema();
+                    return new SincronizacaoDTO(GetVersion(dbContext), schema);
                 }
                 catch (Exception ex)
                 {
-                    return "";
+                    return null;
                 }
             }
         }
 
-        public void Set(DatabaseConn databaseConn)
+        private int GetVersion(DataContext dbContext)
+        {
+            return dbContext.SysConfig.First().Version;
+        }
+
+        public void Set(DatabaseConnDTO databaseConn)
         {
             AppSettings.SetValue("ConnectionString", databaseConn.ConnectionString);
         }
 
-        public bool CreateDatabase(DatabaseConn databaseConn)
+        public bool CreateDatabase(DatabaseConnDTO databaseConn)
         {
             var connectionString = databaseConn.ConnectionString;
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();

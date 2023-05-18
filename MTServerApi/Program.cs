@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using mtvendors_api;
-using mtvendors_api.Models;
+using mtvendors_api.Models.DAO;
 using Serilog;
 using System.Text;
 
@@ -93,5 +93,10 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
+
+// migrate
+var db = app.Services.GetService<DbContext>();
+if (db != null)
+    db.Database.Migrate();
 
 app.Run();

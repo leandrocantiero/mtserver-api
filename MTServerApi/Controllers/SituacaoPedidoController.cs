@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mtvendors_api.DAL.IRepository;
-using mtvendors_api.Models;
 using mtvendors_api.DAL.Repository;
 using System.Data;
 using mtvendors_api.Models.parameters;
+using mtvendors_api.Models.DAO;
+using mtvendors_api.Models.Helpers;
 
 namespace mtvendors_api.Controllers
 {

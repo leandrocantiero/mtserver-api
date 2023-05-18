@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using mtvendors_api.DAL.IRepository;
 using mtvendors_api.DAL.Repository;
-using mtvendors_api.Models;
+using mtvendors_api.Models.DAO;
+using mtvendors_api.Models.DTO;
 using System.Data;
 
 namespace mtvendors_api.Controllers
@@ -20,7 +21,7 @@ namespace mtvendors_api.Controllers
         }
 
         [HttpPost("Set")]
-        public ActionResult Set([Bind(include: "Host, User, DatabaseName")] DatabaseConn conn)
+        public ActionResult Set([Bind(include: "Host, User, DatabaseName")] DatabaseConnDTO conn)
         {
             try
             {
@@ -49,20 +50,29 @@ namespace mtvendors_api.Controllers
         }
 
         [HttpGet("Get")]
-        public ActionResult<DatabaseConn?> Get()
+        public ActionResult<DatabaseConnDTO?> Get()
         {
             return databaseRepository.Get();
         }
 
-        [Authorize]
-        [HttpGet("GetDatabaseStructure")]
-        public ActionResult<string> GetDatabaseStructure([Bind(include: "Host, User, DatabaseName")] DatabaseConn conn)
+        //[Authorize]
+        [HttpGet("GetDatabaseSchema")]
+        public ActionResult<SincronizacaoDTO?> GetDatabaseStructure()
         {
-            return databaseRepository.GetDatabaseStructure(conn);
+            var conn = databaseRepository.Get();
+
+            if (ValidateConn(conn))
+            {
+                return databaseRepository.GetDatabaseSchema(conn);
+            }
+            else
+            {
+                return BadRequest("Não foi possível realizar a conexão com esta base de dados!");
+            }
         }
 
         [HttpPost("Create")]
-        public ActionResult Create([Bind(include: "Host, User, DatabaseName")] DatabaseConn conn)
+        public ActionResult Create([Bind(include: "Host, User, DatabaseName")] DatabaseConnDTO conn)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +98,7 @@ namespace mtvendors_api.Controllers
             }
         }
 
-        private bool ValidateConn(DatabaseConn conn)
+        private bool ValidateConn(DatabaseConnDTO conn)
         {
             var connectionString = conn.ConnectionString;
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();

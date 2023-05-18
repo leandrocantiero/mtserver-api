@@ -1,15 +1,15 @@
-﻿using mtvendors_api.Models;
+﻿using mtvendors_api.Models.DTO;
 
 namespace mtvendors_api.DAL.IRepository
 {
     public interface IDatabaseRepository
     {
-        void Set(DatabaseConn databaseConn);
+        void Set(DatabaseConnDTO databaseConn);
 
-        DatabaseConn Get();
+        DatabaseConnDTO Get();
 
-        string GetDatabaseStructure(DatabaseConn databaseConn);
+        SincronizacaoDTO? GetDatabaseSchema(DatabaseConnDTO databaseConn);
 
-        bool CreateDatabase(DatabaseConn databaseConn);
+        bool CreateDatabase(DatabaseConnDTO databaseConn);
     }
 }

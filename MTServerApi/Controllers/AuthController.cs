@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using mtvendors_api.DAL.IRepository;
 using mtvendors_api.DAL.Repository;
-using mtvendors_api.Models;
+using mtvendors_api.Models.DAO;
 using mtvendors_api.Models.parameters;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;

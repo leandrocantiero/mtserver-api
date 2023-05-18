@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using mtvendors_api.Models;
+using mtvendors_api.Models.DAO;
 
 #nullable disable
 
@@ -19,7 +19,107 @@ namespace mtvendors_api.Migrations
                 .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("mtvendors_api.Models.Cliente", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.AgendaVisita", b =>
+                {
+                    b.Property<int>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("codigo");
+
+                    b.Property<DateOnly>("DataNotificacao")
+                        .HasColumnType("date")
+                        .HasColumnName("data_notificacao");
+
+                    b.Property<DateOnly>("DataVisita")
+                        .HasColumnType("date")
+                        .HasColumnName("data_visita");
+
+                    b.Property<int>("Excluido")
+                        .HasColumnType("int")
+                        .HasColumnName("excluido");
+
+                    b.Property<int>("FkClienteCnpjCpf")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_cliente_cnpj_cpf");
+
+                    b.Property<TimeOnly>("Horario")
+                        .HasColumnType("time(6)")
+                        .HasColumnName("horario");
+
+                    b.Property<string>("Observacoes")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("observacoes");
+
+                    b.Property<string>("PeriodoVisita")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("periodo_visita");
+
+                    b.Property<int>("Sequencia")
+                        .HasColumnType("int")
+                        .HasColumnName("sequencia");
+
+                    b.Property<int>("fkVendedor")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_vendedor");
+
+                    b.HasKey("Codigo");
+
+                    b.ToTable("agendavisita");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.AutorizacaoPedido", b =>
+                {
+                    b.Property<string>("NrPedidoPalm")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("nr_pedido_palm");
+
+                    b.Property<int>("CodVendedor")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_vendedor");
+
+                    b.Property<DateOnly>("DataRequisicao")
+                        .HasColumnType("date")
+                        .HasColumnName("data_requisicao");
+
+                    b.Property<string>("Observacao")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("observacao");
+
+                    b.Property<int>("Situacao")
+                        .HasColumnType("int")
+                        .HasColumnName("situacao");
+
+                    b.HasKey("NrPedidoPalm");
+
+                    b.ToTable("autorizacaopedido");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Cidade", b =>
+                {
+                    b.Property<int>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("codigo");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("nome");
+
+                    b.Property<string>("UF")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("uf");
+
+                    b.HasKey("Codigo");
+
+                    b.ToTable("cidade");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Cliente", b =>
                 {
                     b.Property<string>("Codigo")
                         .HasColumnType("varchar(255)")
@@ -178,7 +278,63 @@ namespace mtvendors_api.Migrations
                     b.ToTable("cliente");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.CondPgto", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Cobranca", b =>
+                {
+                    b.Property<int>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("codigo");
+
+                    b.Property<DateOnly>("Data")
+                        .HasColumnType("date")
+                        .HasColumnName("data");
+
+                    b.Property<int>("FkClienteCnpjCpf")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_cliente_cnpj_cpf");
+
+                    b.Property<int>("FkEmpresa")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_empresa");
+
+                    b.Property<int>("FkFilial")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_filial");
+
+                    b.Property<int>("FkTipoTitulo")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_tipo_titulo");
+
+                    b.Property<int>("FkTitulo")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_titulo");
+
+                    b.Property<double>("PgtoCheque")
+                        .HasColumnType("double")
+                        .HasColumnName("pgto_cheque");
+
+                    b.Property<double>("PgtoDinheiro")
+                        .HasColumnType("double")
+                        .HasColumnName("pgto_dinheiro");
+
+                    b.Property<double>("PgtoOutrasEspecies")
+                        .HasColumnType("double")
+                        .HasColumnName("pgto_outras_especies");
+
+                    b.Property<double>("PgtoTicket")
+                        .HasColumnType("double")
+                        .HasColumnName("pgto_ticket");
+
+                    b.Property<double>("ValorCorrigido")
+                        .HasColumnType("double")
+                        .HasColumnName("valor_corrigido");
+
+                    b.HasKey("Codigo");
+
+                    b.ToTable("cobranca");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.CondPgto", b =>
                 {
                     b.Property<string>("Codigo")
                         .HasColumnType("varchar(255)")
@@ -207,7 +363,62 @@ namespace mtvendors_api.Migrations
                     b.ToTable("condpgto");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.Empresa", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.ContatoCliente", b =>
+                {
+                    b.Property<int>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("codigo");
+
+                    b.Property<string>("Cargo")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cargo");
+
+                    b.Property<string>("DDD")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("ddd");
+
+                    b.Property<string>("Departamento")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("departamento");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FkClienteCnpjCpf")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_cliente_cnpj_cpf");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("nome");
+
+                    b.Property<int>("Ramal")
+                        .HasColumnType("int")
+                        .HasColumnName("ramal");
+
+                    b.Property<int>("Sequencia")
+                        .HasColumnType("int")
+                        .HasColumnName("sequencia");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("telefone");
+
+                    b.HasKey("Codigo");
+
+                    b.ToTable("contatocliente");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Empresa", b =>
                 {
                     b.Property<int>("Codigo")
                         .ValueGeneratedOnAdd()
@@ -229,7 +440,191 @@ namespace mtvendors_api.Migrations
                     b.ToTable("empresa");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.FamiliaProduto", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.EnderecoCobranca", b =>
+                {
+                    b.Property<int>("Cep")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("cep");
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("bairro");
+
+                    b.Property<string>("Complemento")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("complemento");
+
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("endereco");
+
+                    b.Property<string>("FkClienteCnpjCpf")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_cliente_cnpj_cpf");
+
+                    b.Property<string>("FkCodigoCidade")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_codigo_cidade");
+
+                    b.Property<int>("Sequencia")
+                        .HasColumnType("int")
+                        .HasColumnName("sequencia");
+
+                    b.Property<string>("UF")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("uf");
+
+                    b.Property<string>("cnpj_cobranca")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cnpj_cobranca");
+
+                    b.HasKey("Cep");
+
+                    b.ToTable("enderecocobranca");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.EnderecoEntrega", b =>
+                {
+                    b.Property<int>("Cep")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("cep");
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("bairro");
+
+                    b.Property<string>("Complemento")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("complemento");
+
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("endereco");
+
+                    b.Property<string>("FkClienteCnpjCpf")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_cliente_cnpj_cpf");
+
+                    b.Property<string>("FkCodigoCidade")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_codigo_cidade");
+
+                    b.Property<string>("InscricaoEstadual")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("inscricao_estadual");
+
+                    b.Property<int>("Sequencia")
+                        .HasColumnType("int")
+                        .HasColumnName("sequencia");
+
+                    b.Property<string>("UF")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("uf");
+
+                    b.Property<string>("cnpj")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cnpj");
+
+                    b.HasKey("Cep");
+
+                    b.ToTable("enderecoentrega");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.EstoqueDisponivel", b =>
+                {
+                    b.Property<string>("CodigoLocalArmazenamento")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("codigo_local_armazenamento");
+
+                    b.Property<int>("FkEmpresa")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_empresa");
+
+                    b.Property<double>("Quantidade")
+                        .HasColumnType("double")
+                        .HasColumnName("quantidade");
+
+                    b.Property<int>("fkFilial")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_filial");
+
+                    b.Property<string>("fkItemGrade1")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_item_grade1");
+
+                    b.Property<string>("fkItemGrade2")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_item_grade2");
+
+                    b.Property<string>("fkItemGrade3")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_item_grade3");
+
+                    b.Property<string>("fkProduto")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_produto");
+
+                    b.HasKey("CodigoLocalArmazenamento");
+
+                    b.ToTable("estoquedisponivel");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Evento", b =>
+                {
+                    b.Property<int>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("codigo");
+
+                    b.Property<DateTime>("DataHora")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("data_hora");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("descricao");
+
+                    b.Property<int>("FkTipoEvento")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_tipo_evento");
+
+                    b.Property<string>("FkVendedor")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_vendedor");
+
+                    b.Property<int>("Visualizado")
+                        .HasColumnType("int")
+                        .HasColumnName("visualizado");
+
+                    b.HasKey("Codigo");
+
+                    b.ToTable("evento");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.FamiliaProduto", b =>
                 {
                     b.Property<string>("Codigo")
                         .HasColumnType("varchar(255)")
@@ -248,7 +643,77 @@ namespace mtvendors_api.Migrations
                     b.ToTable("familiaproduto");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.Filial", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.FaturamentoPedido", b =>
+                {
+                    b.Property<string>("NrPedidoPalm")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("nr_pedido_palm");
+
+                    b.Property<DateOnly>("DataFaturamento")
+                        .HasColumnType("date")
+                        .HasColumnName("data_faturamento");
+
+                    b.Property<int>("FkEmpresa")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_empresa");
+
+                    b.Property<int>("FkFilial")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_filial");
+
+                    b.Property<string>("FkItemGrade1")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_item_grade1");
+
+                    b.Property<string>("FkItemGrade2")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_item_grade2");
+
+                    b.Property<string>("FkItemGrade3")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_item_grade3");
+
+                    b.Property<string>("FkVendedor")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_vendedor");
+
+                    b.Property<string>("Fk_Produto")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_produto");
+
+                    b.Property<string>("NrPedidoRetaguarda")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("nr_pedido_retaguarda");
+
+                    b.Property<int>("NumeroNf")
+                        .HasColumnType("int")
+                        .HasColumnName("numero_nf");
+
+                    b.Property<double>("QuantidadeFaturada")
+                        .HasColumnType("double")
+                        .HasColumnName("quantidade_faturada");
+
+                    b.Property<int>("SeqItemNf")
+                        .HasColumnType("int")
+                        .HasColumnName("seq_item_nf");
+
+                    b.Property<string>("SerieNf")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("serie_nf");
+
+                    b.HasKey("NrPedidoPalm");
+
+                    b.ToTable("faturamentopedido");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Filial", b =>
                 {
                     b.Property<int>("Codigo")
                         .ValueGeneratedOnAdd()
@@ -272,7 +737,98 @@ namespace mtvendors_api.Migrations
                     b.ToTable("filial");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.Imagem", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.FormaPagamento", b =>
+                {
+                    b.Property<int>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("codigo");
+
+                    b.Property<int>("Abreviatura")
+                        .HasColumnType("int")
+                        .HasColumnName("abreviatura");
+
+                    b.Property<int>("FkEmpresa")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_empresa");
+
+                    b.HasKey("Codigo");
+
+                    b.ToTable("formapgto");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.HistoricoCliente", b =>
+                {
+                    b.Property<string>("NrPedidoPalm")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("nr_pedido_palm");
+
+                    b.Property<string>("CodCategoria1")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cod_categoria1");
+
+                    b.Property<string>("CodCategoria2")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cod_categoria2");
+
+                    b.Property<string>("CodCategoria3")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cod_categoria3");
+
+                    b.Property<int>("FkClienteCnpjCpf")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_cliente_cnpj_cpf");
+
+                    b.Property<int>("FkCondPgto")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_cond_pgto");
+
+                    b.Property<int>("FkEmpresa")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_empresa");
+
+                    b.Property<int>("FkFilial")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_filial");
+
+                    b.Property<int>("FkFormaPgto")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_forma_pgto");
+
+                    b.Property<int>("FkOperComercial")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_oper_comercial");
+
+                    b.Property<int>("FkTipoCobranca")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_tipo_cobranca");
+
+                    b.Property<int>("FkTransportadora")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_transportadora");
+
+                    b.Property<int>("FkVendedor")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_vendedor");
+
+                    b.Property<double>("LimiteCredito")
+                        .HasColumnType("double")
+                        .HasColumnName("limite_credito");
+
+                    b.Property<string>("SituacaoCliente")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("situacao_cliente");
+
+                    b.HasKey("NrPedidoPalm");
+
+                    b.ToTable("historicocliente");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Imagem", b =>
                 {
                     b.Property<string>("Nome")
                         .HasColumnType("varchar(255)")
@@ -300,7 +856,7 @@ namespace mtvendors_api.Migrations
                     b.ToTable("imagem");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.JustificativaPedido", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.JustificativaPedido", b =>
                 {
                     b.Property<int>("Codigo")
                         .ValueGeneratedOnAdd()
@@ -317,26 +873,30 @@ namespace mtvendors_api.Migrations
                     b.ToTable("justificativa");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.Meta", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Meta", b =>
                 {
                     b.Property<int>("FkFilial")
                         .HasColumnType("int")
                         .HasColumnName("fk_filial");
 
                     b.Property<string>("FkVendedor")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)")
                         .HasColumnName("fk_vendedor");
 
                     b.Property<string>("FkClienteCnpjCpf")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)")
                         .HasColumnName("fk_cliente_cnpj_cpf");
 
                     b.Property<string>("FkProduto")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
                         .HasColumnName("fk_produto");
 
                     b.Property<string>("FkFamilia")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
                         .HasColumnName("fk_familia");
 
                     b.Property<string>("Periodo")
@@ -357,7 +917,152 @@ namespace mtvendors_api.Migrations
                     b.ToTable("meta");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.Produto", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Pedido", b =>
+                {
+                    b.Property<string>("NrPedidoPalm")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("nr_pedido_palm");
+
+                    b.Property<string>("CodCategoria1")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cod_categoria1");
+
+                    b.Property<string>("CodCategoria2")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cod_categoria2");
+
+                    b.Property<string>("CodCategoria3")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cod_categoria3");
+
+                    b.Property<DateOnly>("DataEmissao")
+                        .HasColumnType("date")
+                        .HasColumnName("data_emissao");
+
+                    b.Property<DateOnly>("DataEntrega")
+                        .HasColumnType("date")
+                        .HasColumnName("data_entrega");
+
+                    b.Property<double>("Desconto1")
+                        .HasColumnType("double")
+                        .HasColumnName("desconto1");
+
+                    b.Property<double>("Desconto2")
+                        .HasColumnType("double")
+                        .HasColumnName("desconto2");
+
+                    b.Property<double>("Desconto3")
+                        .HasColumnType("double")
+                        .HasColumnName("desconto3");
+
+                    b.Property<double>("Desconto4")
+                        .HasColumnType("double")
+                        .HasColumnName("desconto4");
+
+                    b.Property<int>("FkClienteCnpjCpf")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_cliente_cnpj_cpf");
+
+                    b.Property<int>("FkCondPgto")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_cond_pgto");
+
+                    b.Property<int>("FkContato")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_contato");
+
+                    b.Property<int>("FkEmpresa")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_empresa");
+
+                    b.Property<int>("FkEndCobranca")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_end_cobranca");
+
+                    b.Property<int>("FkEndEntrega")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_end_entrega");
+
+                    b.Property<int>("FkFilial")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_filial");
+
+                    b.Property<int>("FkFormaPgto")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_forma_pgto");
+
+                    b.Property<int>("FkNatOper")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_nat_oper");
+
+                    b.Property<int>("FkOperComercial")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_oper_comercial");
+
+                    b.Property<int>("FkTipoCobranca")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_tipo_cobranca");
+
+                    b.Property<int>("FkTipoFrete")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_tipo_frete");
+
+                    b.Property<int>("FkTransportadora")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_transportadora");
+
+                    b.Property<int>("FkVendedor")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_vendedor");
+
+                    b.Property<TimeOnly>("HoraEmissao")
+                        .HasColumnType("time(6)")
+                        .HasColumnName("hora_emissao");
+
+                    b.Property<string>("NrPedidoCliente")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("nr_pedido_cliente");
+
+                    b.Property<string>("NrPedidoRetaguarda")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("nr_pedido_retaguarda");
+
+                    b.Property<string>("ObsPedido")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("obs_pedido");
+
+                    b.Property<double>("PesoBruto")
+                        .HasColumnType("double")
+                        .HasColumnName("peso_bruto");
+
+                    b.Property<int>("SituacaoPedido")
+                        .HasColumnType("int")
+                        .HasColumnName("situacao_pedido");
+
+                    b.Property<double>("ValorBruto")
+                        .HasColumnType("double")
+                        .HasColumnName("valor_bruto");
+
+                    b.Property<double>("ValorFrete")
+                        .HasColumnType("double")
+                        .HasColumnName("valor_frete");
+
+                    b.Property<double>("ValorFreteTonelada")
+                        .HasColumnType("double")
+                        .HasColumnName("valor_frete_tonelada");
+
+                    b.HasKey("NrPedidoPalm");
+
+                    b.ToTable("pedido");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Produto", b =>
                 {
                     b.Property<string>("Codigo")
                         .HasColumnType("varchar(255)")
@@ -428,7 +1133,7 @@ namespace mtvendors_api.Migrations
                     b.ToTable("Produto");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.Propriedade", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Propriedade", b =>
                 {
                     b.Property<string>("Nome")
                         .HasColumnType("varchar(255)")
@@ -453,14 +1158,15 @@ namespace mtvendors_api.Migrations
                     b.ToTable("propriedades");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.RelClienteTabelaPreco", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.RelClienteTabelaPreco", b =>
                 {
                     b.Property<int>("FkFilial")
                         .HasColumnType("int")
                         .HasColumnName("fk_filial");
 
                     b.Property<string>("FkClienteCpfCnpj")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)")
                         .HasColumnName("fk_cliente_cpf_cnpj");
 
                     b.Property<int>("FkEmpresa")
@@ -468,7 +1174,8 @@ namespace mtvendors_api.Migrations
                         .HasColumnName("fk_empresa");
 
                     b.Property<string>("FkTabelaPreco")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
                         .HasColumnName("fk_tabela_preco");
 
                     b.HasKey("FkFilial", "FkClienteCpfCnpj", "FkEmpresa", "FkTabelaPreco");
@@ -476,7 +1183,7 @@ namespace mtvendors_api.Migrations
                     b.ToTable("relclientetabelapreco");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.RelCondPgtoTabelaPreco", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.RelCondPgtoTabelaPreco", b =>
                 {
                     b.Property<int>("FkEmpresa")
                         .HasColumnType("int")
@@ -487,19 +1194,23 @@ namespace mtvendors_api.Migrations
                         .HasColumnName("fk_filial");
 
                     b.Property<string>("FkCondicaoPagamento")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
                         .HasColumnName("fk_condicao_pgto");
 
                     b.Property<string>("FkTabelaPreco")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
                         .HasColumnName("fk_tabela_preco");
 
                     b.Property<string>("FkVendedor")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)")
                         .HasColumnName("fk_vendedor");
 
                     b.Property<string>("FkClienteCnpj")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)")
                         .HasColumnName("fk_cliente_cnpj");
 
                     b.Property<string>("Incondicional")
@@ -516,7 +1227,7 @@ namespace mtvendors_api.Migrations
                     b.ToTable("relcondpgtotabpreco");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.RelFilialCondPgto", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.RelFilialCondPgto", b =>
                 {
                     b.Property<int>("FkEmpresa")
                         .HasColumnType("int")
@@ -527,7 +1238,8 @@ namespace mtvendors_api.Migrations
                         .HasColumnName("cod_filial");
 
                     b.Property<string>("FkCondicaoPagamento")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
                         .HasColumnName("cod_condicao");
 
                     b.Property<double>("ValorMin")
@@ -539,10 +1251,11 @@ namespace mtvendors_api.Migrations
                     b.ToTable("relfilialcondpgto");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.RelVendedorTabelaPreco", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.RelVendedorTabelaPreco", b =>
                 {
                     b.Property<string>("FkVendedor")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)")
                         .HasColumnName("fk_vendedor");
 
                     b.Property<int>("FkEmpresa")
@@ -550,7 +1263,8 @@ namespace mtvendors_api.Migrations
                         .HasColumnName("fk_empresa");
 
                     b.Property<string>("FkTabelaPreco")
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
                         .HasColumnName("fk_tabela_preco");
 
                     b.HasKey("FkVendedor", "FkEmpresa", "FkTabelaPreco");
@@ -558,7 +1272,7 @@ namespace mtvendors_api.Migrations
                     b.ToTable("relvendedortabelapreco");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.SituacaoPedido", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.SituacaoPedido", b =>
                 {
                     b.Property<int>("Codigo")
                         .ValueGeneratedOnAdd()
@@ -575,7 +1289,18 @@ namespace mtvendors_api.Migrations
                     b.ToTable("situacaopedido");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.TabelaPreco", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.SysConfig", b =>
+                {
+                    b.Property<int>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.HasKey("Version");
+
+                    b.ToTable("sys_config");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.TabelaPreco", b =>
                 {
                     b.Property<string>("Codigo")
                         .HasColumnType("varchar(255)")
@@ -604,7 +1329,107 @@ namespace mtvendors_api.Migrations
                     b.ToTable("tabelapreco");
                 });
 
-            modelBuilder.Entity("mtvendors_api.Models.Vendedor", b =>
+            modelBuilder.Entity("mtvendors_api.Models.DAO.TipoCobranca", b =>
+                {
+                    b.Property<string>("Codigo")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("codigo");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("descricao");
+
+                    b.Property<int>("FkEmpresa")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_empresa");
+
+                    b.HasKey("Codigo");
+
+                    b.ToTable("tipocobranca");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Titulo", b =>
+                {
+                    b.Property<string>("Codigo")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("codigo");
+
+                    b.Property<DateOnly>("DataVencimento")
+                        .HasColumnType("date")
+                        .HasColumnName("data_vencimento");
+
+                    b.Property<string>("FkClienteCnpjCpf")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fk_cliente_cnpj_cpf");
+
+                    b.Property<int>("FkEmpresa")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_empresa");
+
+                    b.Property<int>("FkFilial")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_filial");
+
+                    b.Property<double>("PercentualJurosDia")
+                        .HasColumnType("double")
+                        .HasColumnName("percentual_juros_dia");
+
+                    b.Property<string>("TipoTitulo")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("tipo_titulo");
+
+                    b.Property<double>("ValorJurosDia")
+                        .HasColumnType("double")
+                        .HasColumnName("valor_juros_dia");
+
+                    b.Property<double>("ValorMulta")
+                        .HasColumnType("double")
+                        .HasColumnName("valor_multa");
+
+                    b.Property<double>("ValorOriginal")
+                        .HasColumnType("double")
+                        .HasColumnName("valor_original");
+
+                    b.HasKey("Codigo");
+
+                    b.ToTable("titulo");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Transportadora", b =>
+                {
+                    b.Property<string>("Codigo")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("codigo");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cidade");
+
+                    b.Property<string>("Cnpj")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("cnpj");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("descricao");
+
+                    b.Property<string>("Uf")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("uf");
+
+                    b.HasKey("Codigo");
+
+                    b.ToTable("transportadora");
+                });
+
+            modelBuilder.Entity("mtvendors_api.Models.DAO.Vendedor", b =>
                 {
                     b.Property<string>("Codigo")
                         .HasColumnType("varchar(255)")

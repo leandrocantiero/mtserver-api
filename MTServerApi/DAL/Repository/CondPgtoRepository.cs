@@ -1,5 +1,6 @@
 ﻿using mtvendors_api.DAL.IRepository;
-using mtvendors_api.Models;
+using mtvendors_api.Models.DAO;
+using mtvendors_api.Models.Helpers;
 using mtvendors_api.Models.parameters;
 using static System.Net.Mime.MediaTypeNames;
 
