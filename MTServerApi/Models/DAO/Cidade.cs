@@ -14,10 +14,12 @@ namespace mtvendors_api.Models.DAO
 
         [Column("nome")]
         [Description("Nome da cidade")]
+        [Size(50)]
         public string Nome { get; set; } = "";
 
         [Column("uf")]
         [Description("UF da cidade")]
+        [Size(2)]
         public string UF { get; set; } = "";
     }
 }

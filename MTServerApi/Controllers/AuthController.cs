@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using mtvendors_api.DAL;
 using mtvendors_api.DAL.IRepository;
 using mtvendors_api.DAL.Repository;
 using mtvendors_api.Models.DAO;

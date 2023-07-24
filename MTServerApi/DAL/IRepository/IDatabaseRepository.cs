@@ -1,4 +1,5 @@
 ﻿using mtvendors_api.Models.DTO;
+using mtvendors_api.Models.Helpers;
 
 namespace mtvendors_api.DAL.IRepository
 {
@@ -8,7 +9,7 @@ namespace mtvendors_api.DAL.IRepository
 
         DatabaseConnDTO Get();
 
-        SincronizacaoDTO? GetDatabaseSchema(DatabaseConnDTO databaseConn);
+        void SaveSchema(DataContext context, Schema schema);
 
         bool CreateDatabase(DatabaseConnDTO databaseConn);
     }

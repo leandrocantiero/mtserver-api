@@ -6,6 +6,7 @@ using System.Data;
 using mtvendors_api.Models.parameters;
 using mtvendors_api.Models.DAO;
 using mtvendors_api.Models.Helpers;
+using mtvendors_api.DAL;
 
 namespace mtvendors_api.Controllers
 {

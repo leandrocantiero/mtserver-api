@@ -1,27 +1,27 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using mtvendors_api;
-using mtvendors_api.Models.DAO;
+using mtvendors_api.DAL;
+using mtvendors_api.DAL.Repository;
+using mtvendors_api.Models.DTO;
+using mtvendors_api.Models.Helpers;
 using Serilog;
+using System.Net;
 using System.Text;
 
-//var webApplicationOptions = new WebApplicationOptions()
-//{
-//    ContentRootPath = AppContext.BaseDirectory,
-//    Args = args,
-//    ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName
-//};
 var builder = WebApplication.CreateBuilder(args);
 
-if (!builder.Environment.IsDevelopment())
-{
-    builder.Host.UseWindowsService();
-}
-
-builder.Services.AddControllers();
+builder.Services.AddControllers(); //.AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownProxies.Add(IPAddress.Parse("192.168.0.101"));
+});
+
 builder.Services.AddDbContext<DataContext>(opt =>
 {
     var connectionString = AppSettings.GetValue("ConnectionString");
@@ -80,7 +80,7 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
+app.UseForwardedHeaders();
 app.UseRouting();
 app.UseCors(x => x
     .AllowAnyMethod()
@@ -93,10 +93,25 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
-
-// migrate
-var db = app.Services.GetService<DbContext>();
-if (db != null)
-    db.Database.Migrate();
-
 app.Run();
+
+// Migrate latest database changes during startup
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+    if (context != null && context.Database.CanConnect())
+    {
+        var conn = new DatabaseConnDTO(AppSettings.GetValue("ConnectionString"));
+        
+        try
+        {
+            // Atualização automática
+            context.Database.Migrate();
+            new DatabaseRepository().SaveSchema(context, DBConverter.GetDatabaseSchema(conn.DatabaseName));
+        }
+        catch (Exception ex)
+        {
+            // Atualização automática não suportada
+        }
+    }
+}

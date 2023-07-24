@@ -6,11 +6,12 @@ namespace mtvendors_api.Models.Helpers
 {
     public static class DBConverter
     {
-        public static Schema GetDatabaseSchema()
+        public static Schema GetDatabaseSchema(string databaseName)
         {
             Schema schema = new Schema();
-            schema.Name = "mtvendorsdb";
+            schema.Name = databaseName;
 
+            schema.Tables.Add(GetTableSchema(typeof(AgendaVisita)));
             schema.Tables.Add(GetTableSchema(typeof(Cidade)));
 
             return schema;
@@ -18,26 +19,31 @@ namespace mtvendors_api.Models.Helpers
 
         private static Table GetTableSchema(Type type)
         {
-            Table table = new Table();
+            var tableAttribute = Attribute.GetCustomAttribute(type, typeof(System.ComponentModel.DataAnnotations.Schema.TableAttribute)) as System.ComponentModel.DataAnnotations.Schema.TableAttribute;
+
+            Table table = new Table { Name = tableAttribute.Name };
             PropertyInfo[] props = type.GetProperties();
 
             foreach (PropertyInfo prop in props)
             {
-                var keyAttribute = (System.ComponentModel.DataAnnotations.KeyAttribute)Attribute.GetCustomAttribute(prop, typeof(System.ComponentModel.DataAnnotations.KeyAttribute));
-                var columnAttribute = (System.ComponentModel.DataAnnotations.Schema.ColumnAttribute)Attribute.GetCustomAttribute(prop, typeof(System.ComponentModel.DataAnnotations.Schema.ColumnAttribute));
-                var descriptionAttribute = (DescriptionAttribute)Attribute.GetCustomAttribute(prop, typeof(DescriptionAttribute));
-                var sizeAttribute = (SizeAttribute)Attribute.GetCustomAttribute(prop, typeof(SizeAttribute));
-                var precisionAttribute = (SizeAttribute)Attribute.GetCustomAttribute(prop, typeof(SizeAttribute));
-                var defaultValueAttribute = (DefaultValueAttribute)Attribute.GetCustomAttribute(prop, typeof(DefaultValueAttribute));
+                var keyAttribute = Attribute.GetCustomAttribute(prop, typeof(System.ComponentModel.DataAnnotations.KeyAttribute)) as System.ComponentModel.DataAnnotations.KeyAttribute;
+                var columnAttribute = Attribute.GetCustomAttribute(prop, typeof(System.ComponentModel.DataAnnotations.Schema.ColumnAttribute)) as System.ComponentModel.DataAnnotations.Schema.ColumnAttribute;
+                // var descriptionAttribute = (DescriptionAttribute)Attribute.GetCustomAttribute(prop, typeof(DescriptionAttribute));
+                var sizeAttribute = Attribute.GetCustomAttribute(prop, typeof(SizeAttribute)) as SizeAttribute;
+                var precisionAttribute = Attribute.GetCustomAttribute(prop, typeof(SizeAttribute)) as SizeAttribute;
+                var defaultValueAttribute = Attribute.GetCustomAttribute(prop, typeof(DefaultValueAttribute)) as DefaultValueAttribute;
 
-                Column column = new Column();
-                column.isPrimary = keyAttribute != null;
-                column.Name = columnAttribute.Name;
-                column.Description = descriptionAttribute.AdditionalInfo;
-                column.Type = ColumnTypeConverter(columnAttribute.TypeName != null ? columnAttribute.TypeName : prop.PropertyType.Name);
-                column.Size = sizeAttribute != null ? sizeAttribute.AdditionalInfo : 255;
-                column.Precision = precisionAttribute != null ? precisionAttribute.AdditionalInfo : 0;
-                column.DefaultValue = defaultValueAttribute != null ? defaultValueAttribute.AdditionalInfo : "";
+                Column column = new()
+                {
+                    isPrimary = keyAttribute != null,
+                    Name = columnAttribute.Name,
+                    // Description = descriptionAttribute.AdditionalInfo,
+                    Type = ColumnTypeConverter(columnAttribute.TypeName != null ? columnAttribute.TypeName : prop.PropertyType.Name),
+                    Size = sizeAttribute != null ? sizeAttribute.AdditionalInfo : 255,
+                    Precision = precisionAttribute != null ? precisionAttribute.AdditionalInfo : 0,
+                    DefaultValue = defaultValueAttribute != null ? defaultValueAttribute.AdditionalInfo : ""
+                };
+
                 table.Columns.Add(column);
             }
 

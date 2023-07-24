@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using mtvendors_api.DAL;
 using mtvendors_api.DAL.IRepository;
 using mtvendors_api.DAL.Repository;
-using mtvendors_api.Models.DAO;
 using mtvendors_api.Models.DTO;
 using System.Data;
 
@@ -52,22 +52,14 @@ namespace mtvendors_api.Controllers
         [HttpGet("Get")]
         public ActionResult<DatabaseConnDTO?> Get()
         {
-            return databaseRepository.Get();
-        }
-
-        //[Authorize]
-        [HttpGet("GetDatabaseSchema")]
-        public ActionResult<SincronizacaoDTO?> GetDatabaseStructure()
-        {
             var conn = databaseRepository.Get();
 
             if (ValidateConn(conn))
             {
-                return databaseRepository.GetDatabaseSchema(conn);
-            }
-            else
+                return Ok(conn);
+            } else
             {
-                return BadRequest("Não foi possível realizar a conexão com esta base de dados!");
+                return BadRequest("A conexão gravada é inválida");
             }
         }
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace mtvendors_api.Migrations
 {
-    public partial class First : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -706,12 +706,14 @@ namespace mtvendors_api.Migrations
                 name: "sys_config",
                 columns: table => new
                 {
-                    Version = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
+                    version = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    schema = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_sys_config", x => x.Version);
+                    table.PrimaryKey("PK_sys_config", x => x.version);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 

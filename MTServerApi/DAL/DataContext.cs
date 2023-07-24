@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using mtvendors_api.Models.DAO;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace mtvendors_api.Models.DAO
+namespace mtvendors_api.DAL
 {
     public class DataContext : DbContext
     {
+        public int DatabaseVersion { get; } = 100;
+
         public DataContext(DbContextOptions options) : base(options)
         { }
 

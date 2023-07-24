@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using mtvendors_api.Models.DAO;
+using mtvendors_api.DAL;
 
 #nullable disable
 
@@ -1293,7 +1293,13 @@ namespace mtvendors_api.Migrations
                 {
                     b.Property<int>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("version");
+
+                    b.Property<string>("Schema")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("schema");
 
                     b.HasKey("Version");
 

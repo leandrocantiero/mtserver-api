@@ -2,8 +2,8 @@
 using mtvendors_api.DAL.IRepository;
 using mtvendors_api.Models.DTO;
 using mtvendors_api.Models.DAO;
-using Newtonsoft.Json;
 using mtvendors_api.Models.Helpers;
+using System.Text.Json;
 
 namespace mtvendors_api.DAL.Repository
 {
@@ -17,30 +17,6 @@ namespace mtvendors_api.DAL.Repository
                 return null;
 
             return new DatabaseConnDTO(connectionString);
-        }
-
-        public SincronizacaoDTO? GetDatabaseSchema(DatabaseConnDTO databaseConn)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-            optionsBuilder.UseMySql(databaseConn.ConnectionString, ServerVersion.AutoDetect(databaseConn.ConnectionString));
-
-            using (DataContext dbContext = new DataContext(optionsBuilder.Options))
-            {
-                try
-                {
-                    var schema = DBConverter.GetDatabaseSchema();
-                    return new SincronizacaoDTO(GetVersion(dbContext), schema);
-                }
-                catch (Exception ex)
-                {
-                    return null;
-                }
-            }
-        }
-
-        private int GetVersion(DataContext dbContext)
-        {
-            return dbContext.SysConfig.First().Version;
         }
 
         public void Set(DatabaseConnDTO databaseConn)
@@ -58,15 +34,9 @@ namespace mtvendors_api.DAL.Repository
             {
                 try
                 {
-                    if (dbContext.Database.EnsureCreated())
-                    {
-                        Set(databaseConn);
-                        RunSeeds(dbContext);
-                        dbContext.SaveChanges();
-                    } else
-                    {
-                        dbContext.Database.EnsureDeleted();
-                    }
+                    dbContext.Database.Migrate();
+                    Set(databaseConn);
+                    RunSeeds(dbContext, databaseConn.DatabaseName);
 
                     return true;
                 }
@@ -77,9 +47,20 @@ namespace mtvendors_api.DAL.Repository
             }
         }
 
-        private void RunSeeds(DataContext dbContext)
+        public void SaveSchema(DataContext context, Schema schema)
         {
-            dbContext.Propriedades.AddRange(new List<Propriedade>
+            var sysconf = context.SysConfig.FirstOrDefault();
+            if (sysconf != null)
+            {
+                sysconf.Schema = JsonSerializer.Serialize(schema);
+                context.Entry(sysconf).State = EntityState.Modified;
+                context.SaveChanges();
+            }
+        }
+
+        private void RunSeeds(DataContext context, string databaseName)
+        {
+            context.Propriedades.AddRange(new List<Propriedade>
             {
                 new Propriedade { Nome = "PERMITE_ALTERAR_TABELA_PRECO_CLIENTE", Descricao = "", Sequencia = 1, Valor = "S" },
                 new Propriedade { Nome = "FILTRAR_TABELAS_PRECO_HISTORICO_CLIENTE", Descricao = "", Sequencia = 2, Valor = "S" },
@@ -139,6 +120,15 @@ namespace mtvendors_api.DAL.Repository
                 new Propriedade { Nome = "COND_PGTO_ZERAR_DESCONTO", Descricao = "", Sequencia = 56, Valor = "S" },
                 new Propriedade { Nome = "GERA_INFOR_CAT_CLI_PEDIDO", Descricao = "", Sequencia = 57, Valor = "S" },
             });
+
+            var jsonSchema = JsonSerializer.Serialize(DBConverter.GetDatabaseSchema(databaseName));
+            context.SysConfig.Add(new SysConfig
+            {
+                Version = context.DatabaseVersion,
+                Schema = jsonSchema
+            });
+
+            context.SaveChanges();
         }
     }
 }

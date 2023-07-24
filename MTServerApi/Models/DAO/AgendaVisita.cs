@@ -1,40 +1,59 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using mtvendors_api.Models.Attributes;
+using mtvendors_api.Models.Converters;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace mtvendors_api.Models.DAO
 {
     [Table("agendavisita")]
     public class AgendaVisita
     {
-        [Key]
-        [Column("codigo")]
-        public int Codigo { get; set; } = 0;
+        //[Key]
+        //[Column("codigo")]
+        //[Description("Código do agendamento")]
+        //public int Codigo { get; set; } = 0;
 
         [Column("data_notificacao")]
-        public DateOnly DataNotificacao { get; set; } = new DateOnly();
+        [Description("Data da notificação")]
+        [JsonConverter(typeof(DateOnlyJsonConverter))]
+        public DateOnly? DataNotificacao { get; set; }
 
         [Column("data_visita")]
-        public DateOnly DataVisita { get; set; } = new DateOnly();
+        [Description("Data da visita")]
+        [JsonConverter(typeof(DateOnlyJsonConverter))]
+        public DateOnly? DataVisita { get; set; }
 
         [Column("excluido")]
+        [Description("Flag que indica exclusão")]
         public int Excluido { get; set; } = 0;
 
+        [Key]
         [Column("fk_cliente_cnpj_cpf")]
-        public int FkClienteCnpjCpf { get; set; } = 0;
+        [Description("CNPJ/CPF do cliente")]
+        public string FkClienteCnpjCpf { get; set; }
 
         [Column("fk_vendedor")]
-        public int fkVendedor { get; set; } = 0;
+        [Description("Código do vendedor")]
+        public string? fkVendedor { get; set; }
 
         [Column("horario")]
-        public TimeOnly Horario { get; set; } = new TimeOnly();
+        [Description("Horário do agendamento")]
+        [JsonConverter(typeof(TimeOnlyJsonConverter))]
+        public TimeOnly? Horario { get; set; }
 
         [Column("observacoes")]
-        public string Observacoes { get; set; } = "";
+        [Description("Observações do agendamento")]
+        [Size(255)]
+        public string? Observacoes { get; set; }
 
         [Column("periodo_visita")]
-        public string PeriodoVisita { get; set; } = "";
+        [Description("Período do agendamento")]
+        [Size(50)]
+        public string PeriodoVisita { get; set; }
 
         [Column("sequencia")]
+        [Description("Sequência do agendamento")]
         public int Sequencia { get; set; } = 0;
     }
 }
